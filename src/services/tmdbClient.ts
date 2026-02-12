@@ -1,6 +1,6 @@
 const BASE_URL = "https://api.themoviedb.org/3";
 
-const API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwNTczMDE4NWRmZWRkMzk0M2FhM2FkMTQwODNiM2YzNyIsIm5iZiI6MTc3MDg4MjQ4Ni44OTQsInN1YiI6IjY5OGQ4NWI2YmFhMWM4ZGQ4NWU5ZjhlYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.PAAbGylGC4svn9IanuROD_il_PGyRRLi-pmO5NhSPyE"
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY
 
 /**
  * Fonction générique universelle pour faire n’importe quelle requête HTTP.
