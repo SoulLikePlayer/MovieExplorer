@@ -7,19 +7,21 @@ export default function MoviePage() {
 
   if (loading) {
     return (
-      <div className="loading-container">
-        <div className="loader"></div>
-        <p>Chargement du film...</p>
+      <div className="loading-state" style={{ height: '100vh' }}>
+        <div className="loading-spinner"></div>
+        <p style={{ fontSize: 'var(--text-lg)' }}>Chargement du film...</p>
       </div>
     );
   }
 
   if (error || !movie) {
     return (
-      <div className="error-container">
-        <h2>Erreur</h2>
-        <p>{error || "Film introuvable"}</p>
-        <a href="/" className="back-link">← Retour à l'accueil</a>
+      <div className="empty-state" style={{ margin: 'var(--space-16) auto', maxWidth: '600px' }}>
+        <h2 style={{ color: 'var(--ff-text)', marginBottom: 'var(--space-4)' }}>Erreur</h2>
+        <p style={{ marginBottom: 'var(--space-6)' }}>{error || "Film introuvable"}</p>
+        <a href="/" className="back-button">
+          ← Retour à l'accueil
+        </a>
       </div>
     );
   }
@@ -33,13 +35,12 @@ export default function MoviePage() {
     : null;
 
   const year = movie.release_date?.split('-')[0] || 'Année inconnue';
-  const vote = movie.vote_average.toFixed(1);
   const runtime = movie.runtime 
     ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}min` 
     : 'Durée inconnue';
 
   return (
-    <div className="movie-page">
+    <div className="movie-detail">
       {backdropUrl && (
         <div 
           className="backdrop"
@@ -47,67 +48,116 @@ export default function MoviePage() {
         />
       )}
       
-      <div className="movie-content">
-        <div className="movie-poster">
-          <img src={posterUrl} alt={movie.title} />
+      <div className="detail-content">
+        <div>
+          <img 
+            src={posterUrl} 
+            alt={movie.title}
+            className="detail-poster"
+          />
         </div>
 
-        <div className="movie-info">
-          <h1>{movie.title} <span className="year">({year})</span></h1>
-          
-          <div className="tagline">{movie.tagline}</div>
+        <div>
+          <div className="detail-header">
+            <h1 className="detail-title">
+              {movie.title}
+              <span className="detail-year">({year})</span>
+            </h1>
+            
+            {movie.tagline && (
+              <p className="detail-tagline">
+                {movie.tagline}
+              </p>
+            )}
+          </div>
 
-          <div className="stats">
-            <div className="stat-item">
-              <span className="label"> Note</span>
-              <span className="value">{vote}/10</span>
+          <div className="movie-metrics">
+            <div className="metric">
+              <div className="metric-label">Note</div>
+              <div className="metric-value rating">
+                ⭐ {movie.vote_average.toFixed(1)}/10
+              </div>
             </div>
-            <div className="stat-item">
-              <span className="label">Sortie</span>
-              <span className="value">{new Date(movie.release_date).toLocaleDateString('fr-FR')}</span>
+            <div className="metric">
+              <div className="metric-label">Sortie</div>
+              <div className="metric-value">
+                {new Date(movie.release_date).toLocaleDateString('fr-FR')}
+              </div>
             </div>
-            <div className="stat-item">
-              <span className="label">Durée</span>
-              <span className="value">{runtime}</span>
+            <div className="metric">
+              <div className="metric-label">Durée</div>
+              <div className="metric-value">{runtime}</div>
             </div>
-            <div className="stat-item">
-              <span className="label">Statut</span>
-              <span className="value">{movie.status}</span>
+            <div className="metric">
+              <div className="metric-label">Statut</div>
+              <div className="metric-value">{movie.status}</div>
             </div>
           </div>
 
-          <div className="genres">
-            {movie.genres.map(genre => (
-              <span key={genre.id} className="genre-tag">
-                {genre.name}
-              </span>
-            ))}
+          <div style={{ marginBottom: 'var(--space-6)' }}>
+            <h2 style={{ 
+              fontSize: 'var(--text-xl)', 
+              marginBottom: 'var(--space-3)',
+              color: backdropUrl ? 'white' : 'var(--ff-text)'
+            }}>
+              Synopsis
+            </h2>
+            <p style={{
+              lineHeight: '1.8',
+              color: backdropUrl ? 'rgba(255,255,255,0.9)' : 'var(--ff-text-light)',
+              fontSize: 'var(--text-base)'
+            }}>
+              {movie.overview || "Aucun synopsis disponible."}
+            </p>
           </div>
 
-          <div className="overview">
-            <h2>Synopsis</h2>
-            <p>{movie.overview || "Aucun synopsis disponible."}</p>
-          </div>
-
-          <div className="production">
-            <h2>Production</h2>
-            <div className="production-companies">
-              {movie.production_companies?.slice(0, 5).map(company => (
-                <div key={company.id} className="company">
-                  {company.logo_path ? (
-                    <img 
-                      src={`https://image.tmdb.org/t/p/w200${company.logo_path}`}
-                      alt={company.name}
-                    />
-                  ) : (
-                    <span>{company.name}</span>
-                  )}
-                </div>
+          <div style={{ marginBottom: 'var(--space-6)' }}>
+            <h2 style={{ 
+              fontSize: 'var(--text-xl)', 
+              marginBottom: 'var(--space-3)',
+              color: backdropUrl ? 'white' : 'var(--ff-text)'
+            }}>
+              Genres
+            </h2>
+            <div className="genres-list">
+              {movie.genres.map(genre => (
+                <span key={genre.id} className="genre-tag">
+                  {genre.name}
+                </span>
               ))}
             </div>
           </div>
 
-          <a href="/" className="back-home">
+          {movie.production_companies.length > 0 && (
+            <div style={{ marginBottom: 'var(--space-6)' }}>
+              <h2 style={{ 
+                fontSize: 'var(--text-xl)', 
+                marginBottom: 'var(--space-3)',
+                color: backdropUrl ? 'white' : 'var(--ff-text)'
+              }}>
+                Production
+              </h2>
+              <div className="companies-list">
+                {movie.production_companies.slice(0, 5).map(company => (
+                  <div key={company.id} style={{ display: 'flex', alignItems: 'center' }}>
+                    {company.logo_path ? (
+                      <img 
+                        src={`https://image.tmdb.org/t/p/w200${company.logo_path}`}
+                        alt={company.name}
+                        className="company-logo"
+                      />
+                    ) : (
+                      <span className="company-name">
+                        {company.name}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <a href="/" className="back-button">
             ← Retour à l'accueil
           </a>
         </div>

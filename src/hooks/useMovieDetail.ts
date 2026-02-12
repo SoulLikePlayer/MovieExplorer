@@ -9,9 +9,7 @@ export function useMovieDetails(id: number) {
 
   useEffect(() => {
     if (!id) return;
-
     setLoading(true);
-
     tmdbGet<MovieDetails>(`/movie/${id}`)
       .then(setMovie)
       .catch((e) => setError(e.message))
