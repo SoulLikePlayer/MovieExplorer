@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { tmdbGet } from "../services/tmdbClient";
-import { MovieDetails } from "../types/movie";
+import type { MovieDetails } from "../types/movie";
 
 export function useMovieDetails(id: number) {
   const [movie, setMovie] = useState<MovieDetails | null>(null);
